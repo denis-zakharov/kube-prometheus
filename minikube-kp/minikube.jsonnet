@@ -20,6 +20,9 @@ local kp =
       prometheus+: {
         replicas: 1,
       },
+      prometheusAdapter+: {
+        replicas: 1,
+      },
     },
     // Configure External URL's per application
     alertmanager+:: {
