@@ -62,7 +62,7 @@ local kp =
               backend: {
                 service: {
                   name: $.alertmanager.service.metadata.name,
-                  port: 'web',
+                  port: { name: 'web' },
                 },
               },
             }],
@@ -81,7 +81,7 @@ local kp =
               backend: {
                 service: {
                   name: $.prometheus.service.metadata.name,
-                  port: 'web',
+                  port: { name: 'web' },
                 },
               },
             }],
@@ -100,7 +100,7 @@ local kp =
               backend: {
                 service: {
                   name: $.grafana.service.metadata.name,
-                  port: 'http',
+                  port: { name: 'http' },
                 },
               },
             }],

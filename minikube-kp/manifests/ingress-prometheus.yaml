@@ -11,6 +11,7 @@ spec:
       - backend:
           service:
             name: prometheus-k8s
-            port: web
+            port:
+              name: web
         path: /
         pathType: Prefix
