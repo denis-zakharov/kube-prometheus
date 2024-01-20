@@ -14,6 +14,9 @@ local kp =
       common+: {
         namespace: 'monitoring',
       },
+      alertmanager+: {
+        replicas: 1,
+      },
     },
     // Configure External URL's per application
     alertmanager+:: {
