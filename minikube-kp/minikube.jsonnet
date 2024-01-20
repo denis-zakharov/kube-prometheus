@@ -23,8 +23,19 @@ local kp =
       prometheusAdapter+: {
         replicas: 1,
       },
+      // Configure Grafana External URL
+      grafana+: {
+        config+: {
+          sections+: {
+            server+: {
+              root_url: 'http://grafana.minikube/',
+            },
+          },
+        },
+      },
     },
-    // Configure External URL's per application
+
+    // Configure External URL's per Prometheus application
     alertmanager+:: {
       alertmanager+: {
         spec+: {
@@ -39,15 +50,7 @@ local kp =
         },
       },
     },
-    grafana+:: {
-      config+: {
-        sections+: {
-          server+: {
-            root_url: 'http://grafana.minikube/',
-          },
-        },
-      },
-    },
+
     // Configure Ingress objects
     ingress+:: {
       alertmanager: ingress(
