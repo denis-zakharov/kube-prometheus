@@ -8,6 +8,9 @@ metadata:
     app.kubernetes.io/version: 10.2.3
   name: grafana-config
   namespace: monitoring
+sections:
+  server:
+    root_url: http://grafana.minikube/
 stringData:
   grafana.ini: |
     [date_formats]

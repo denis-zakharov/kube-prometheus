@@ -1,3 +1,4 @@
+local ingress = import 'ingress.libsonnet';
 local kp =
   (import 'kube-prometheus/main.libsonnet') +
   // Uncomment the following imports to enable its patches
@@ -13,6 +14,90 @@ local kp =
       common+: {
         namespace: 'monitoring',
       },
+    },
+    // Configure External URL's per application
+    alertmanager+:: {
+      alertmanager+: {
+        spec+: {
+          externalUrl: 'http://alertmanager.minikube',
+        },
+      },
+    },
+    prometheus+:: {
+      prometheus+: {
+        spec+: {
+          externalUrl: 'http://prometheus.minikube',
+        },
+      },
+    },
+    grafana+:: {
+      config+: {
+        sections+: {
+          server+: {
+            root_url: 'http://grafana.minikube/',
+          },
+        },
+      },
+    },
+    // Configure Ingress objects
+    ingress+:: {
+      alertmanager: ingress(
+        name=$.alertmanager.alertmanager.metadata.name,
+        namespace=$.values.common.namespace,
+        rules=[{
+          host: 'alertmanager.minikube',
+          http: {
+            paths: [{
+              path: '/',
+              pathType: 'Prefix',
+              backend: {
+                service: {
+                  name: $.alertmanager.service.metadata.name,
+                  port: 'web',
+                },
+              },
+            }],
+          },
+        }]
+      ),
+      prometheus: ingress(
+        name=$.prometheus.prometheus.metadata.name,
+        namespace=$.values.common.namespace,
+        rules=[{
+          host: 'prometheus.minikube',
+          http: {
+            paths: [{
+              path: '/',
+              pathType: 'Prefix',
+              backend: {
+                service: {
+                  name: $.prometheus.service.metadata.name,
+                  port: 'web',
+                },
+              },
+            }],
+          },
+        }]
+      ),
+      grafana: ingress(
+        name=$.grafana.deployment.metadata.name,
+        namespace=$.values.common.namespace,
+        rules=[{
+          host: 'grafana.minikube',
+          http: {
+            paths: [{
+              path: '/',
+              pathType: 'Prefix',
+              backend: {
+                service: {
+                  name: $.grafana.service.metadata.name,
+                  port: 'http',
+                },
+              },
+            }],
+          },
+        }]
+      ),
     },
   };
 
@@ -34,4 +119,5 @@ local kp =
 { ['kubernetes-' + name]: kp.kubernetesControlPlane[name] for name in std.objectFields(kp.kubernetesControlPlane) }
 { ['node-exporter-' + name]: kp.nodeExporter[name] for name in std.objectFields(kp.nodeExporter) } +
 { ['prometheus-' + name]: kp.prometheus[name] for name in std.objectFields(kp.prometheus) } +
-{ ['prometheus-adapter-' + name]: kp.prometheusAdapter[name] for name in std.objectFields(kp.prometheusAdapter) }
+{ ['prometheus-adapter-' + name]: kp.prometheusAdapter[name] for name in std.objectFields(kp.prometheusAdapter) } +
+{ ['ingress-' + name]: kp.ingress[name] for name in std.objectFields(kp.ingress) }

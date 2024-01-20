@@ -1,0 +1,16 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: grafana
+  namespace: monitoring
+spec:
+  rules:
+  - host: grafana.minikube
+    http:
+      paths:
+      - backend:
+          service:
+            name: grafana
+            port: http
+        path: /
+        pathType: Prefix
