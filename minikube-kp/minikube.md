@@ -20,6 +20,19 @@ minikube start --kubernetes-version=v1.28.3 --memory=6g --bootstrapper=kubeadm \
 	--extra-config=kubelet.authorization-mode=Webhook \
 	--extra-config=scheduler.bind-address=0.0.0.0 \
 	--extra-config=controller-manager.bind-address=0.0.0.0
+minikube addons enable ingress
+```
+
+## ingress dns
+Add to /etc/hosts
+```
+ip=$(minikube ip)
+echo "
+# minikube kube-prometheus
+$ip	grafana.minikube
+$ip	alertmanager.minikube
+$ip	prometheus.minikube
+"
 ```
 
 # cleanup
